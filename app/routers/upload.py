@@ -1,10 +1,12 @@
 import os
 import json
+import urllib.parse
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from typing import List
 from pydantic import BaseModel
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from pymongo import MongoClient
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import MongoDBAtlasVectorSearch
 from langchain_community.chat_models import ChatOllama
@@ -79,12 +81,15 @@ async def upload_document(files: List[UploadFile] = File(...)):
             docs = text_splitter.split_documents(tagged_docs)
             print('docs', docs)
             all_docs.extend(docs)
-            processed_files.append(file.filename)
-        
+            processed_files.append(file.filename)    
+
+        cert_path = "/Users/vasanths/Projects/ask-my-document-using-mongo-db/X509-cert-7219432555404954442.pem"
+        encoded_cert_path = urllib.parse.quote_plus(cert_path)
+        final_uri = f"{MONGO_URI}&tlsCertificateKeyFile={encoded_cert_path}"
         vector_store = MongoDBAtlasVectorSearch.from_connection_string(
-            MONGO_URI,
-            f"{DB_NAME}.{COLLECTION_NAME}",
-            embeddings,
+            connection_string=final_uri,
+            namespace=f"{DB_NAME}.{COLLECTION_NAME}",
+            embedding=embeddings,
             index_name="vector_index"
         )
         vector_store.add_documents(all_docs)

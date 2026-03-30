@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-
+import urllib.parse
 from langchain_community.vectorstores import MongoDBAtlasVectorSearch
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.chat_models import ChatOllama
@@ -20,8 +20,11 @@ class QueryResponse(BaseModel):
 @router.post("/query/", response_model=QueryResponse)
 async def query_document(request: QueryRequest):
     try:
+        cert_path = "/Users/vasanths/Projects/ask-my-document-using-mongo-db/X509-cert-7219432555404954442.pem"
+        encoded_cert_path = urllib.parse.quote_plus(cert_path)
+        final_uri = f"{MONGO_URI}&tlsCertificateKeyFile={encoded_cert_path}"
         vector_store = MongoDBAtlasVectorSearch.from_connection_string(
-            MONGO_URI,
+            final_uri,
             f"{DB_NAME}.{COLLECTION_NAME}",
             embeddings,
             index_name="vector_index"

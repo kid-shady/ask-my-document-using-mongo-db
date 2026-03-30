@@ -5,6 +5,7 @@ langchain-community
 langchain-huggingface
 langchain-groq
 langchain-core
+langchain-text-splitters
 pymongo
 python-dotenv
 PyPDF2
