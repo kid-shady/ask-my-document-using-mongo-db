@@ -43,7 +43,7 @@ Create a `.env` file:
 MONGO_DB_URL=mongodb+srv://username:password@cluster.mongodb.net/
 DB_NAME=your_database_name
 COLLECTION_NAME=your_collection_name
-OLLAMA_MODEL=qwen:4b
+OLLAMA_MODEL=qwen3.5:cloud"
 ```
 
 ### Installation
@@ -67,7 +67,7 @@ OLLAMA_MODEL=qwen:4b
 
 5. Run the frontend:
    ```bash
-   streamlit run frontend/streamlit_app.py
+   streamlit run app/frontend/app.py
    ```
 
 ## Usage
